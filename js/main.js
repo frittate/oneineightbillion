@@ -1,45 +1,25 @@
 
 
-//generate 6 numbers from 49
-//get user input of 6 numbers
-//compare numbers and return rights and wrongs. 
-//make payment for one bet and return field
-/*function lottery(numbers,bet){
-  let field = [];
-  let draw = [];
-  let rand;
-  let win = [];
-
-  for (let i=1;i<50;i++){
-    field[i-1]=i;
-  }
-
-  for (let j=0;j<6;j++){
-    rand = field[Math.floor(Math.random() * field.length)];
-    field.splice(field.lastIndexOf(rand),1);
-    draw.push(rand);  
-  }
-
-  for (let d of draw){
-    for (let n of numbers) {
-      if (d === n){
-        win.push(d);
-      }
-    }
-  }
-  
-  draw.sort(function(a,b){return a-b});
-  win.sort(function(a,b){return a-b});
-  
-  let msg = 'You bet ' + bet + '$ on the numbers ' + numbers + '. The winning numbers were ' + draw + '. ';
-  return (win.length === 0) ? msg + 'Sorry, no win' : msg + win.length + ' correct: ' + win;
-  
-}
-
-lottery(numbers, bet);*/
+//generate 8 billion data points
+//each one on hover generates a small line of information about the person: location, age, gender
 
 let container = {
-  numbers: [],
+  persons: [],
+
+  addPerson: function(id) {
+    this.persons.push({
+      personId: id,
+      personCountry: container.newCountry(),
+      personAge: '20',
+      personGender: 'male',
+    })
+  },
+
+  newCountry: function(){
+    let country = 'China';
+    return country;
+  }
+  /*numbers: [],
   wallet: null,
   pot: null,
   cashOut: null,
@@ -96,46 +76,55 @@ let container = {
 
     let msg = 'You bet ' + bet + ' ETH on the numbers ' + numbers + '. The winning numbers were ' + draw + '. ';
     return (win.length === 0) ? msg + 'Sorry, no win' : msg + win.length + ' correct: ' + win;
-},
+  },*/
 };
 
 let handlers = {
-  addNumber: function(number){
-      container.numbers.push(number);
-      console.log(container.numbers);
-    },
+    namer: function(obj) {
+      debugger;
+      if (container.persons.length == 0 || container.persons[obj.currentTarget.id].personId == 0) {
+        handlers.setName(obj.currentTarget.id);
+      
+      } else {
 
-    play: function(){
-      console.log('go');
-      let result = document.createElement('LI');
-      result.innerHTML = container.lottery(container.numbers);
-      document.getElementById('resultList').appendChild(result);
-      container.cashIn(1);
-      this.reset();
-    },
+        handlers.getName(obj.currentTarget.id);
 
-    reset: function(){
-      container.numbers = [];
-      document.getElementById('chosenNumbers').innerHTML = '<li></li>';
-      document.getElementById('submit').disabled = true;
-      let c = document.getElementById('selectorDiv').children;
-      for (let i=0;i<c.length;i++){
-        c[i].disabled = false;
       }
     },
 
-    setWallet: function(){
-      let wallet = document.getElementById('wallet');
-      wallet.innerHTML = document.getElementById('selectwallet').value;
-      container.wallet = Number.parseInt(document.getElementById('selectwallet').value);
+    setName: function(id) {
+      container.addPerson(id);
       debugger;
-      document.getElementById('setwallet').disabled = true;
-      document.getElementById('selectwallet').disabled = true;
+      handlers.getName(id);
     },
+
+    getName: function(id){
+      let display = document.getElementById('display');
+      let thisPerson = container.persons[id - 1];
+        display.innerHTML  = '#' + thisPerson.personId + ', ' + thisPerson.personCountry + ', Age ' + thisPerson.personAge + ', ' + thisPerson.personGender;
+    },
+
+    default: function(){
+      let display = document.getElementById('display');
+      display.innerHTML = 'Hover over a dot';
+    }
 
 };
 
 let view = {
+
+  createPeople: function(){
+    for (let i = 1;i<10;i++){
+      let newPerson = document.createElement('BUTTON');
+      newPerson.className = 'person';
+      newPerson.id = i;
+      newPerson.onmouseover = handlers.namer;
+      newPerson.onmouseout = handlers.default;
+      document.getElementById('personContainer').appendChild(newPerson);
+    }
+
+  }
+  /*
   createField: function(){
     for (let s = 1;s<36;s++){
       let selector = document.createElement('BUTTON');
@@ -178,11 +167,11 @@ let view = {
     let counter = document.getElementById('number');
     counter.innerHTML = d.toLocaleTimeString();
     },
-
+*/
 };
 
-view.createField();
-let timer = setInterval(view.counter,100);
+view.createPeople();
+//let timer = setInterval(view.counter,100);
 
 
 
